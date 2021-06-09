@@ -37,7 +37,7 @@ exports.getUser = async (req, res) => {
     } else if (getScore > 750 && getScore <= 800) {
       array.splice(1, 0, "Elite");
     }
-    const obj = Object.assign({}, array);
+    const obj = Object.assign(array);
     return res.send(obj);
   } catch (error) {
     return res.status(400).send(error);
@@ -63,19 +63,21 @@ exports.getUser = async (req, res) => {
 };
 
 exports.getReport = async (req, res) => {
-  let poor = [0];
-  let fair = [0];
-  let good = [0];
-  let excellent = [0];
-  let elite = [0];
-  let array = [{ poor: poor[0] }];
+  let poor = 0;
+  let fair = 0;
+  let good = 0;
+  let excellent = 0;
+  let elite = 0;
+
+  //array = [{ poor: poor[0] }];
   scores.map((getScore) => {
     if (getScore > 0 && getScore <= 300) {
       poor = parseInt(poor) + 1;
+      //report.push(poor);
       return poor;
     } else if (getScore > 300 && getScore <= 500) {
       fair = parseInt(fair) + 1;
-      return fair;
+      //return fair;
     } else if (getScore > 500 && getScore <= 650) {
       good = parseInt(good) + 1;
       return good;
@@ -87,12 +89,14 @@ exports.getReport = async (req, res) => {
       return elite;
     }
   });
-  console.log(array);
-  console.log(poor);
-  console.log(fair);
-  console.log(good);
-  console.log(excellent);
-  console.log(elite);
+  let report = {
+    poor: poor,
+    fair: fair,
+    good: good,
+    excellent: excellent,
+    elite: elite,
+  };
+  return res.send(report);
 };
 
 exports.getRank = async (req, res) => {
