@@ -67,17 +67,13 @@ exports.getReport = async (req, res) => {
       excellent: excellent,
       elite: elite,
     };
-    const sortedList = Object.entries(report).sort((a, b) => {
+    let sortedList = [];
+    sortedList = Object.entries(report).sort((a, b) => {
       if (a[1] >= b[1]) return -1;
       else if (a[1] < b[1]) return -1;
-      else {
-        if (b[0] > a[0]) return 1;
-        else if (b[0] < a[0]) return -1;
-        else return 0;
-      }
     });
-
-    return res.send(sortedList);
+    const obj = Object.fromEntries(sortedList);
+    return res.send(obj);
   } catch (error) {
     return res.status(400).send(error);
   }
