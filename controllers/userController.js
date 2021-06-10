@@ -12,54 +12,30 @@ const scorers = [
 ];
 
 exports.getUser = async (req, res) => {
-  const users = req.params.name;
-  //console.log(users);
-  const getScore = req.params.score;
-  //console.log(getScore);
-  const findUserIndex = scorers.indexOf(users);
-  //console.log(findUserIndex);
-  const findScoreIndex = scores.indexOf(parseInt(getScore));
-  let array = [getScore, users];
-  //console.log(findScoreIndex);
-
+  let array = [];
   try {
-    if (findUserIndex != findScoreIndex) {
-      return res.send({ msg: "user and score not matched" });
-    } else if (getScore > 0 && getScore <= 300) {
-      array.splice(1, 0, "Poor");
-      console.log(array);
-    } else if (getScore > 300 && getScore <= 500) {
-      array.splice(1, 0, "Fair");
-    } else if (getScore > 500 && getScore <= 650) {
-      array.splice(1, 0, "Good");
-    } else if (getScore > 650 && getScore <= 750) {
-      array.splice(1, 0, "Excellent");
-    } else if (getScore > 750 && getScore <= 800) {
-      array.splice(1, 0, "Elite");
-    }
-    const obj = Object.assign(array);
-    return res.send(obj);
+    scores.map((score) => {
+      //console.log(score);
+      scorers.map((name) => {
+        if (scores.indexOf(score) == scorers.indexOf(name)) {
+          if (score > 0 && score <= 300) {
+            array.push({ score: score, name: name, Rank: "Poor" });
+          } else if (score > 300 && score <= 500) {
+            array.push({ score: score, name: name, Rank: "Fair" });
+          } else if (score > 500 && score <= 650) {
+            array.push({ score: score, name: name, Rank: "Good" });
+          } else if (score > 650 && score <= 750) {
+            array.push({ score: score, name: name, Rank: "Excellent" });
+          } else if (score > 750 && score <= 800) {
+            array.push({ score: score, name: name, Rank: "Elite" });
+          }
+        }
+      });
+    });
+    return res.status(200).send(array);
   } catch (error) {
     return res.status(400).send(error);
   }
-
-  //   if () {
-
-  //   }
-  //   const find = scores.indexOf(parseInt(getScore));
-  //   // console.log(find);
-
-  //   //console.log(findScore);
-  //   // scores.map((score) => {
-  //   scorers.map((scorer) => {
-  //     //console.log("rer");
-  //     if (parseInt(find) === scorers.indexOf(parseInt(scorer))) {
-  //       console.log("enter");
-  //     }
-  //   });
-  //   // });
-  //   const index = scores.indexOf(400);
-  //console.log(index);
 };
 
 exports.getReport = async (req, res) => {
@@ -70,33 +46,41 @@ exports.getReport = async (req, res) => {
   let elite = 0;
 
   //array = [{ poor: poor[0] }];
-  scores.map((getScore) => {
-    if (getScore > 0 && getScore <= 300) {
-      poor = parseInt(poor) + 1;
-      //report.push(poor);
-      return poor;
-    } else if (getScore > 300 && getScore <= 500) {
-      fair = parseInt(fair) + 1;
-      //return fair;
-    } else if (getScore > 500 && getScore <= 650) {
-      good = parseInt(good) + 1;
-      return good;
-    } else if (getScore > 650 && getScore <= 750) {
-      excellent = parseInt(excellent) + 1;
-      return excellent;
-    } else if (getScore > 750 && getScore <= 800) {
-      elite = parseInt(elite) + 1;
-      return elite;
-    }
-  });
-  let report = {
-    poor: poor,
-    fair: fair,
-    good: good,
-    excellent: excellent,
-    elite: elite,
-  };
-  return res.send(report);
+  try {
+    scores.map((getScore) => {
+      if (getScore > 0 && getScore <= 300) {
+        poor = parseInt(poor) + 1;
+      } else if (getScore > 300 && getScore <= 500) {
+        fair = parseInt(fair) + 1;
+      } else if (getScore > 500 && getScore <= 650) {
+        good = parseInt(good) + 1;
+      } else if (getScore > 650 && getScore <= 750) {
+        excellent = parseInt(excellent) + 1;
+      } else if (getScore > 750 && getScore <= 800) {
+        elite = parseInt(elite) + 1;
+      }
+    });
+    let report = {
+      poor: poor,
+      fair: fair,
+      good: good,
+      excellent: excellent,
+      elite: elite,
+    };
+    const sortedList = Object.entries(report).sort((a, b) => {
+      if (a[1] >= b[1]) return -1;
+      else if (a[1] < b[1]) return -1;
+      else {
+        if (b[0] > a[0]) return 1;
+        else if (b[0] < a[0]) return -1;
+        else return 0;
+      }
+    });
+
+    return res.send(sortedList);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
 };
 
 exports.getRank = async (req, res) => {
